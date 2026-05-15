@@ -1061,7 +1061,7 @@ function applyRoomSnapshot(snapshot, showResult = true) {
 }
 
 async function fetchLanState(showResult = true) {
-  if (!state.lan.roomCode) {
+  if (!state.lan.roomCode || state.thinking) {
     return;
   }
 
@@ -1172,18 +1172,44 @@ async function sendLanMove(row, col) {
     return;
   }
 
+  const player = localLanPlayer();
+
+  // Save state for rollback if server rejects
+  const saved = {
+    cell: state.board[row][col],
+    currentPlayer: state.currentPlayer,
+    moveHistoryLen: state.moveHistory.length,
+    lastMove: state.lastMove ? { row: state.lastMove.row, col: state.lastMove.col } : null,
+    gameOver: state.gameOver,
+    winner: state.winner
+  };
+
+  // Optimistic local update — piece appears instantly
+  placeStone(row, col, player);
+  state.thinking = true;
+
   try {
-    state.thinking = true;
     const data = await lanRequest("/api/lan/move", {
       roomCode: state.lan.roomCode,
       playerId: state.lan.playerId,
       row,
       col
     }, "POST");
+    state.lan.version = data.room.version;
     state.thinking = false;
-    applyRoomSnapshot(data.room, true);
+    if (!state.gameOver) {
+      setStatus("lanOpponentTurn");
+    }
   } catch (error) {
+    // Revert optimistic update
+    state.board[row][col] = saved.cell;
+    state.currentPlayer = saved.currentPlayer;
+    state.moveHistory = state.moveHistory.slice(0, saved.moveHistoryLen);
+    state.lastMove = saved.lastMove;
+    state.gameOver = saved.gameOver;
+    state.winner = saved.winner;
     state.thinking = false;
+    drawBoard();
     setStatus("lanServerError", { message: error.message });
   }
 }
