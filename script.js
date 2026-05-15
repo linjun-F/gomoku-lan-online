@@ -1068,9 +1068,10 @@ async function fetchLanState(showResult = true) {
   const previousVersion = state.lan.version;
   const previousGameOver = state.gameOver;
   const data = await lanRequest(`/api/lan/state?room=${encodeURIComponent(state.lan.roomCode)}`);
-  const shouldShowResult =
-    showResult || (!previousGameOver && data.room.gameOver) || previousVersion !== data.room.version;
-  applyRoomSnapshot(data.room, shouldShowResult && data.room.gameOver);
+  if (previousVersion !== data.room.version) {
+    const shouldShowResult = showResult || (!previousGameOver && data.room.gameOver);
+    applyRoomSnapshot(data.room, shouldShowResult && data.room.gameOver);
+  }
   renderLanPanel();
 }
 
