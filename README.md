@@ -1,89 +1,64 @@
-# Gomoku Arena
+﻿# Gomoku Arena
 
 A browser Gomoku game with:
 
-- Local heuristic AI
+- Local heuristic AI (balanced / aggressive / defensive)
 - Two-player mode on one device
 - External AI mode with OpenAI-compatible APIs
-- LAN multiplayer with room creation and joining
-- Cross-network room server support
+- Online multiplayer with room creation and joining
+- LAN multiplayer for same-network play
 
 ## Quick Start
 
-If you only want local play, open [index.html](/C:/Users/linjunF/Desktop/gomoku-lan-online/index.html) directly in your browser.
+Just double-click [index.html](index.html) or open it in a browser.
 
-If you want LAN multiplayer, start the Node server:
+Online multiplayer works out of the box — the room server is pre-configured. Share the three files (`index.html`, `script.js`, `styles.css`) with a friend and you can play together immediately.
+
+Note: the Render-hosted room server sleeps after 15 minutes of inactivity. The first connection will show "Connecting to server..." while it wakes up (a few seconds). After that, gameplay is smooth.
+
+## Online Multiplayer
+
+1. Open [index.html](index.html)
+2. Choose **LAN Multiplayer** mode
+3. One player clicks **Create Room**
+4. Share the room code with the other player
+5. The other player enters the room code and clicks **Join Room**
+6. Black is the host, white is the joining player
+
+Both players use the same pre-configured server, no setup needed.
+
+## Local LAN Multiplayer
+
+If you want to play within the same local network without internet:
 
 ```powershell
 node server.js
 ```
 
-Or just double-click:
+Or double-click [start.bat](start.bat) to start the server and open the browser.
 
-- [start.bat](/C:/Users/linjunF/Desktop/gomoku-lan-online/start.bat)
+Then open `http://YOUR_PC_IP:8080` on another device in the same LAN.
 
-That will start the local server and open the browser automatically.
+## Deploy Your Own Server
 
-Then open:
+To deploy your own room server (e.g. on Render, Railway, or a VPS):
 
-- On this PC: `http://localhost:8080`
-- On another device in the same LAN: `http://YOUR_PC_IP:8080`
+1. Push this project to GitHub
+2. Connect to [Render](https://render.com) — the `render.yaml` is already included
+3. Open the game, go to **Settings** → **Room Server URL**, and enter your server address
+4. Both players must use the same server URL
 
-On this machine, your current likely Wi-Fi IPv4 is `10.10.15.9`, so another device on the same network would typically open:
-
-```text
-http://10.10.15.9:8080
-```
-
-If that address changes later, run `ipconfig` again and look for the `WLAN` IPv4 address.
-
-## LAN Multiplayer
-
-1. Start `node server.js`
-2. Choose `LAN Multiplayer`
-3. One player clicks `Create Room`
-4. The other player enters the room code and clicks `Join Room`
-5. Black is the host, white is the joining player
-
-Notes:
-
-- LAN mode does not support undo
-- Restart in LAN mode resets the shared room match
-- Both players should use the same server URL from the same host machine
-
-## Cross-Network Play
-
-You can also deploy [server.js](/C:/Users/linjunF/Desktop/gomoku-lan-online/server.js) to any public Node.js server.
-
-Typical flow:
-
-1. Put this project on a server with a public URL
-2. Run `node server.js` there
-3. Open the game on both devices
-4. In `Settings`, set `Room Server URL` to that same public address on both sides
-5. Use `LAN Multiplayer`, then create a room and join by room code
-
-Example public room server URL:
-
-```text
-https://your-room-server.example.com
-```
-
-Notes:
-
-- This works better than direct LAN access on campus or office networks
-- Both players must point to the same room server
-- The current room server is memory-based, so restarting the server clears existing rooms
+The room server is memory-based, so restarting clears existing rooms.
 
 ## External AI Setup
 
-The external AI mode expects an OpenAI-style chat completion endpoint.
+The external AI mode expects an OpenAI-compatible chat completion endpoint.
 
-Required fields:
+In **Settings**, fill in:
 
-- `Endpoint URL`
-- `Model Name`
-- `API Key`
+- **Endpoint URL**
+- **Model Name**
+- **API Key**
 
 The model should return JSON only:
 
