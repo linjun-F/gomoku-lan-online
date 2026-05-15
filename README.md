@@ -1,66 +1,66 @@
-﻿# Gomoku Arena
+﻿# 五子棋竞技场
 
-A browser Gomoku game with:
+浏览器五子棋游戏，支持以下模式：
 
-- Local heuristic AI (balanced / aggressive / defensive)
-- Two-player mode on one device
-- External AI mode with OpenAI-compatible APIs
-- Online multiplayer with room creation and joining
-- LAN multiplayer for same-network play
+- 本地启发式 AI（均衡 / 进攻 / 防守三种风格）
+- 同设备双人对战
+- 外部 AI（兼容 OpenAI 聊天补全接口）
+- 在线联机（房间创建与加入）
+- 局域网联机
 
-## Quick Start
+## 快速开始
 
-Just double-click [index.html](index.html) or open it in a browser.
+直接双击 [index.html](index.html) 或在浏览器中打开即可。
 
-Online multiplayer works out of the box — the room server is pre-configured. Share the three files (`index.html`, `script.js`, `styles.css`) with a friend and you can play together immediately.
+在线联机开箱即用 —— 房间服务器地址已预配好。将三个文件（`index.html`、`script.js`、`styles.css`）发给朋友，双方即可直接对战。
 
-Note: the Render-hosted room server sleeps after 15 minutes of inactivity. The first connection will show "Connecting to server..." while it wakes up (a few seconds). After that, gameplay is smooth.
+注意：Render 托管的房间服务器在 15 分钟无请求后会休眠。首次连接时状态栏会显示"正在连接服务器..."，等待几秒唤醒后即可正常游戏。
 
-## Online Multiplayer
+## 在线联机
 
-1. Open [index.html](index.html)
-2. Choose **LAN Multiplayer** mode
-3. One player clicks **Create Room**
-4. Share the room code with the other player
-5. The other player enters the room code and clicks **Join Room**
-6. Black is the host, white is the joining player
+1. 打开 [index.html](index.html)
+2. 选择 **局域网联机** 模式
+3. 一方点击 **创建房间**
+4. 将房间码分享给另一方
+5. 另一方输入房间码后点击 **加入房间**
+6. 黑子为房主，白子为加入者
 
-Both players use the same pre-configured server, no setup needed.
+双方使用相同的预配服务器地址，无需额外设置。
 
-## Local LAN Multiplayer
+## 局域网联机
 
-If you want to play within the same local network without internet:
+如果只想在同一局域网内对战（无需互联网）：
 
 ```powershell
 node server.js
 ```
 
-Or double-click [start.bat](start.bat) to start the server and open the browser.
+或双击 [start.bat](start.bat) 启动服务器并自动打开浏览器。
 
-Then open `http://YOUR_PC_IP:8080` on another device in the same LAN.
+然后在另一台设备的浏览器中打开 `http://你的电脑IP:8080`。
 
-## Deploy Your Own Server
+## 自建服务器
 
-To deploy your own room server (e.g. on Render, Railway, or a VPS):
+如需部署自己的房间服务器（例如 Render、Railway 或 VPS）：
 
-1. Push this project to GitHub
-2. Connect to [Render](https://render.com) — the `render.yaml` is already included
-3. Open the game, go to **Settings** → **Room Server URL**, and enter your server address
-4. Both players must use the same server URL
+1. 将本项目推送到 GitHub
+2. 连接到 [Render](https://render.com) —— 项目中已包含 `render.yaml` 配置
+3. 打开游戏，进入 **设置** → **房间服务地址**，填入你的服务器地址
+4. 双方必须使用相同的服务器地址
 
-The room server is memory-based, so restarting clears existing rooms.
+房间服务器基于内存，重启会清空现有房间。
 
-## External AI Setup
+## 外部 AI 设置
 
-The external AI mode expects an OpenAI-compatible chat completion endpoint.
+外部 AI 模式需要接入兼容 OpenAI 聊天补全格式的接口。
 
-In **Settings**, fill in:
+在 **设置** 中填写：
 
-- **Endpoint URL**
-- **Model Name**
+- **接口地址**
+- **模型名称**
 - **API Key**
 
-The model should return JSON only:
+模型只需返回纯 JSON：
 
 ```json
 {"row":7,"col":7}
