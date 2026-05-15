@@ -1,0 +1,12 @@
+{
+  "name": "gomoku-lan-online",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser Gomoku with LAN and room-server multiplayer",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

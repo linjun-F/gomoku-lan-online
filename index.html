@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gomoku Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="layout">
+    <section class="hero">
+      <p id="eyebrowText" class="eyebrow">Gomoku Arena</p>
+      <h1 id="heroTitle">Play Gomoku In Your Browser</h1>
+      <p id="introText" class="intro">
+        Includes local AI, two-player mode, and an optional external AI API mode compatible with OpenAI-style chat endpoints.
+      </p>
+
+      <div class="panel controls">
+        <div class="field-group">
+          <label id="modeLabelText" for="modeSelect">Game Mode</label>
+          <select id="modeSelect">
+            <option value="human-vs-ai">Player vs Local AI</option>
+            <option value="human-vs-human">Two Players</option>
+            <option value="human-vs-api">Player vs API AI</option>
+            <option value="human-vs-lan">LAN Multiplayer</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label id="sizeLabelText" for="sizeSelect">Board Size</label>
+          <select id="sizeSelect">
+            <option value="15">15 x 15</option>
+            <option value="13">13 x 13</option>
+            <option value="11">11 x 11</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label id="aiLevelLabelText" for="aiLevel">Local AI Style</label>
+          <select id="aiLevel">
+            <option value="balanced">Balanced</option>
+            <option value="aggressive">Aggressive</option>
+            <option value="defensive">Defensive</option>
+          </select>
+        </div>
+
+        <div class="button-row">
+          <button id="restartBtn" class="primary">Restart</button>
+          <button id="undoBtn">Undo</button>
+          <button id="roomBtn" hidden>Room</button>
+          <button id="settingsBtn">Settings</button>
+        </div>
+      </div>
+
+      <div class="panel status-panel">
+        <div>
+          <span id="turnLabelText" class="status-label">Turn</span>
+          <strong id="turnText">Black</strong>
+        </div>
+        <div>
+          <span id="modeStatusLabelText" class="status-label">Mode</span>
+          <strong id="modeText">Player vs Local AI</strong>
+        </div>
+        <div>
+          <span id="statusLabelText" class="status-label">Status</span>
+          <strong id="statusText">Click the board to start</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="board-wrap">
+      <div class="board-frame panel">
+        <canvas id="board" width="720" height="720" aria-label="Gomoku board"></canvas>
+      </div>
+      <div class="legend">
+        <span id="legendBlackText"><i class="stone black"></i> Black moves first</span>
+        <span id="legendWhiteText"><i class="stone white"></i> White moves second</span>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="settingsDialog" class="config-dialog">
+    <form method="dialog" class="config-card">
+      <div class="config-header">
+        <h2 id="configTitle">Settings</h2>
+        <button id="closeConfigBtn" value="cancel" class="icon-btn" aria-label="Close">x</button>
+      </div>
+
+      <section class="settings-section">
+        <h3 id="languageSectionTitle" class="section-title">Language</h3>
+        <div class="field-group">
+          <label id="languageLabel" for="languageSelect">Language</label>
+          <select id="languageSelect">
+            <option value="zh-CN">&#31616;&#20307;&#20013;&#25991;</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3 id="networkSectionTitle" class="section-title">Room Server</h3>
+        <p id="serverTipText" class="config-tip">
+          Use a public room server address for cross-network play, or keep the local default for LAN play.
+        </p>
+
+        <label>
+          <span id="serverBaseLabelText">Room Server URL</span>
+          <input id="serverBase" type="url" placeholder="http://localhost:8080">
+        </label>
+      </section>
+
+      <section class="settings-section">
+        <h3 id="apiSectionTitle" class="section-title">External AI API</h3>
+        <p id="configTipText" class="config-tip">
+          Use any OpenAI-compatible chat completion endpoint here, including Doubao-compatible gateways or other free providers.
+        </p>
+
+        <label>
+          <span id="apiBaseLabelText">Endpoint URL</span>
+          <input id="apiBase" type="url" placeholder="https://your-api.example.com/v1/chat/completions">
+        </label>
+
+        <label>
+          <span id="apiModelLabelText">Model Name</span>
+          <input id="apiModel" type="text" placeholder="your-model-name">
+        </label>
+
+        <label>
+          <span id="apiKeyLabelText">API Key</span>
+          <input id="apiKey" type="password" placeholder="sk-...">
+        </label>
+      </section>
+
+      <div class="config-actions">
+        <button id="saveConfigBtn" value="default" class="primary" type="button">Save</button>
+        <button value="cancel" type="submit">Close</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="resultDialog" class="config-dialog">
+    <form method="dialog" class="config-card result-card">
+      <div class="config-header">
+        <h2 id="resultTitle">Game Over</h2>
+        <button id="closeResultBtn" value="cancel" class="icon-btn" aria-label="Close">x</button>
+      </div>
+
+      <p id="resultMessage" class="result-message">Black wins</p>
+
+      <div class="config-actions">
+        <button id="playAgainBtn" value="default" class="primary" type="button">Play Again</button>
+        <button id="resultCloseBtn" value="cancel" type="submit">Close</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="lanDialog" class="config-dialog">
+    <form method="dialog" class="config-card">
+      <div class="config-header">
+        <h2 id="lanDialogTitle">Room</h2>
+        <button id="closeLanBtn" value="cancel" class="icon-btn" aria-label="Close">x</button>
+      </div>
+
+      <section id="lanPanel" class="lan-panel">
+        <section id="lanSetup" class="lan-setup">
+          <button id="createRoomBtn" class="primary" type="button">Create Room</button>
+
+          <div class="field-group">
+            <label id="lanRoomLabel" for="lanRoomInput">Room Code</label>
+            <input id="lanRoomInput" type="text" maxlength="8" placeholder="Enter room code">
+          </div>
+
+          <button id="joinRoomBtn" type="button">Join Room</button>
+
+          <p id="lanHelpText" class="config-tip">
+            Run the local server, then share your room code with another device on the same network.
+          </p>
+        </section>
+
+        <section id="lanActive" class="lan-active" hidden>
+          <span id="lanRoomCodeCaption" class="status-label">Current Room</span>
+          <strong id="lanRoomCodeValue" class="lan-room-code">------</strong>
+
+          <div class="button-row">
+            <button id="copyRoomBtn" type="button">Copy Code</button>
+            <button id="leaveRoomBtn" type="button">Leave Room</button>
+          </div>
+
+          <div class="lan-meta">
+            <strong id="lanRoomText">Room: -</strong>
+            <strong id="lanRoleText">Role: -</strong>
+          </div>
+        </section>
+      </section>
+    </form>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
