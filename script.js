@@ -1,4 +1,4 @@
-const STORAGE_KEY = "gomoku-config";
+﻿const STORAGE_KEY = "gomoku-config";
 const EMPTY = 0;
 const BLACK = 1;
 const WHITE = 2;
@@ -227,7 +227,7 @@ const state = {
     model: "",
     key: ""
   },
-  serverBase: "",
+  serverBase: "https://gomoku-lan-online.onrender.com",
   lan: {
     roomCode: "",
     playerId: "",
