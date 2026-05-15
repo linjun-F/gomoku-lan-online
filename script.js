@@ -99,6 +99,7 @@ const translations = {
     lanServerOffline:
       "\u65e0\u6cd5\u8fde\u63a5\u623f\u95f4\u670d\u52a1\uff0c\u8bf7\u68c0\u67e5\u670d\u52a1\u5730\u5740\u6216\u5148\u8fd0\u884c node server.js",
     lanStatusUnavailable: "\u670d\u52a1\u672a\u8fde\u901a",
+    lanConnecting: "\u6b63\u5728\u8fde\u63a5\u670d\u52a1\u5668...",
     closeAria: "\u5173\u95ed",
     errorInvalidMove: "AI \u8fd4\u56de\u4e86\u65e0\u6548\u843d\u70b9",
     errorRequestFailed: "\u8bf7\u6c42\u5931\u8d25\uff0c\u72b6\u6001\u7801 {status}",
@@ -197,6 +198,7 @@ const translations = {
     lanServerError: "LAN server error: {message}",
     lanServerOffline: "Cannot reach the room server. Check the server URL or run node server.js first.",
     lanStatusUnavailable: "Server unavailable",
+    lanConnecting: "Connecting to server...",
     closeAria: "Close",
     errorInvalidMove: "AI returned an invalid move",
     errorRequestFailed: "Request failed with status {status}",
@@ -1087,6 +1089,8 @@ async function createLanRoom() {
     return;
   }
 
+  setStatus("lanConnecting");
+
   try {
     const data = await lanRequest("/api/lan/create", { boardSize: state.boardSize }, "POST");
     state.lan.roomCode = data.roomCode;
@@ -1113,6 +1117,8 @@ async function joinLanRoom() {
     setStatus("lanEnterRoomCode");
     return;
   }
+
+  setStatus("lanConnecting");
 
   try {
     const data = await lanRequest("/api/lan/join", { roomCode }, "POST");
